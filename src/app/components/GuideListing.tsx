@@ -1,9 +1,11 @@
-import { useParams, Link } from "react-router";
-import { Filter, Star, DollarSign, Languages, Award, Tag, ArrowUpDown, Shield } from "lucide-react";
+import { useParams, Link, useSearchParams } from "react-router";
+import { Filter, Star, DollarSign, Languages, Award, Tag, ArrowUpDown, Shield, Search } from "lucide-react";
 import { useState } from "react";
 
 export function GuideListing() {
   const { trekId } = useParams();
+  const [searchParams] = useSearchParams();
+  const [searchTerm, setSearchTerm] = useState(searchParams.get("search") || "");
 
   const [filters, setFilters] = useState({
     priceMin: "",
@@ -127,7 +129,16 @@ export function GuideListing() {
     },
   ];
 
-  const sortedGuides = [...guides].sort((a, b) => {
+  const filteredGuides = guides.filter((guide) => {
+    if (!searchTerm) return true;
+    const q = searchTerm.toLowerCase();
+    const matchName = guide.name.toLowerCase().includes(q);
+    const matchBio = guide.bio.toLowerCase().includes(q);
+    const matchSpec = guide.specialization.toLowerCase().includes(q);
+    return matchName || matchBio || matchSpec;
+  });
+
+  const sortedGuides = [...filteredGuides].sort((a, b) => {
     switch (sortBy) {
       case "price-low":
         return a.pricePerDay - b.pricePerDay;
@@ -147,8 +158,21 @@ export function GuideListing() {
       <div className="bg-white border-b border-gray-200 py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <h1 className="text-[#1B5E20] mb-2">Available Guides</h1>
-          <p className="text-[#263238]">Connect with experienced local guides for Everest Base Camp trek</p>
-          <div className="mt-4 flex items-center gap-2 px-4 py-3 bg-[#E8F5E9] rounded-xl border border-[#A5D6A7]">
+          <p className="text-[#263238]">Connect with experienced local guides for your heritage tours and treks</p>
+          
+          <div className="mt-6 max-w-2xl">
+            <div className="relative">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-[#1B5E20] w-5 h-5" />
+              <input
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                placeholder="Search local guides by name, bio, or specialization..."
+                className="w-full pl-12 pr-4 py-3 bg-[#F5F5F5] rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#2E7D32]"
+              />
+            </div>
+          </div>
+
+          <div className="mt-6 flex items-center gap-2 px-4 py-3 bg-[#E8F5E9] rounded-xl border border-[#A5D6A7]">
             <Award className="w-5 h-5 text-[#2E7D32]" />
             <p className="text-sm text-[#1B5E20]">
               All guides are shown fairly - no biased rankings. Use filters to find the right match.

@@ -19,6 +19,19 @@ public class CatalogDtos {
       String description
   ) {}
 
+  public record StayOption(
+      String name,
+      String type,
+      String pricePerNight,
+      List<String> amenities
+  ) {}
+
+  public record StayPlan(
+      int day,
+      String location,
+      List<StayOption> accommodations
+  ) {}
+
   public record Trek(
       int id,
       String name,
@@ -32,7 +45,10 @@ public class CatalogDtos {
       String bestSeason,
       List<String> highlights,
       List<TrekItineraryItem> itinerary,
-      List<TrekCheckpoint> checkpoints
+      List<TrekCheckpoint> checkpoints,
+      String type,
+      List<StayPlan> stayPlan,
+      List<Integer> guideIds
   ) {}
 
   public record GuideReview(
@@ -67,11 +83,37 @@ public class CatalogDtos {
       List<String> treks,
       int totalTrips,
       boolean verified,
+      String licenseNumber,
       boolean includesAccommodation,
       boolean includesMeals,
       boolean porterOptional,
       List<GuideAvailabilityDay> availability,
       List<GuideReview> reviews
+  ) {}
+
+  public record Activity(
+      int id,
+      String title,
+      String type,
+      String category,
+      String location,
+      double latitude,
+      double longitude,
+      String image,
+      String description,
+      String dateTime,
+      String priceRange,
+      String duration
+  ) {}
+
+  public record Notification(
+      String id,
+      String userId,
+      String type,
+      String message,
+      String title,
+      boolean read,
+      long createdAt
   ) {}
 }
 

@@ -100,8 +100,12 @@ public class BookingController {
         trek.duration(),
         doc.getTrekId(),
         doc.getGuideId(),
+        "",
         doc.getStatus(),
+        "pending",
         doc.getProposedPricePerDay(),
+        0.0,
+        false,
         doc.getCreatedAt()
     );
   }

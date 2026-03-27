@@ -1,6 +1,7 @@
 package com.gantavya.domain;
 
 import java.time.Instant;
+import java.util.List;
 
 public class BookingDtos {
 
@@ -9,10 +10,20 @@ public class BookingDtos {
     decline
   }
 
+  public enum PaymentStatus {
+    pending,
+    processing,
+    completed,
+    failed,
+    refunded
+  }
+
   public record CreateBookingRequest(
       String touristId,
       int trekId,
-      int guideId
+      int guideId,
+      String startDate,
+      String accommodationChoice
   ) {}
 
   public record DecisionRequest(
@@ -26,9 +37,18 @@ public class BookingDtos {
       String duration,
       int trekId,
       int guideId,
+      String startDate,
       String status,
+      String paymentStatus,
       double proposedPricePerDay,
+      double accommodationCost,
+      boolean isExtended,
       Instant createdAt
+  ) {}
+
+  public record BookingExtensionRequest(
+      int additionalDays,
+      String reason
   ) {}
 }
 

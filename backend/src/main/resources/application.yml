@@ -4,5 +4,5 @@ server:
 spring:
   data:
     mongodb:
-      uri: ${MONGODB_URI:mongodb://localhost:27017/gantavya}
+      uri: ${MONGODB_URI:mongodb+srv://bimarshaghimire09_db_user:bimarsha%400562@cluster0.hwgxdsn.mongodb.net/gantavya?appName=Cluster0}
 

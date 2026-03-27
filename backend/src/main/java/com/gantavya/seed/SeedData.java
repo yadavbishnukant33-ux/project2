@@ -7,6 +7,9 @@ import com.gantavya.domain.CatalogDtos.GuideReview;
 import com.gantavya.domain.CatalogDtos.Trek;
 import com.gantavya.domain.CatalogDtos.TrekCheckpoint;
 import com.gantavya.domain.CatalogDtos.TrekItineraryItem;
+import com.gantavya.domain.CatalogDtos.StayPlan;
+import com.gantavya.domain.CatalogDtos.StayOption;
+import com.gantavya.domain.CatalogDtos.Activity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +52,43 @@ public final class SeedData {
             new TrekCheckpoint(6, "Lobuche", "4,940m", "village", 65, 45, "High altitude village"),
             new TrekCheckpoint(7, "Gorak Shep", "5,164m", "stop", 75, 38, "Last stop before EBC"),
             new TrekCheckpoint(8, "Everest Base Camp", "5,364m", "destination", 85, 30, "Final destination - Base of Mt. Everest")
-        )
+        ),
+        "long",
+        List.of(
+            new StayPlan(1, "Kathmandu", List.of(
+                new StayOption("Hotel de l'Annapurna", "hotel", "$80-120", List.of("WiFi", "Hot Water", "Restaurant")),
+                new StayOption("Kantipur Temple House", "hotel", "$60-90", List.of("WiFi", "Courtyard", "Guided Tours"))
+            )),
+            new StayPlan(2, "Lukla", List.of(
+                new StayOption("Yeti Mountain Home", "teahouse", "$30-40", List.of("Heating", "Local Meals")),
+                new StayOption("Lukla Airport Hotel", "hotel", "$45-60", List.of("WiFi", "Hot Showers"))
+            )),
+            new StayPlan(3, "Phakding", List.of(
+                new StayOption("Phakding Lodge", "teahouse", "$25-35", List.of("Basic Amenities", "Local Food")),
+                new StayOption("Riverside Teahouse", "teahouse", "$20-30", List.of("Mountain View", "Meals"))
+            )),
+            new StayPlan(4, "Namche Bazaar", List.of(
+                new StayOption("Namche Lodge", "hotel", "$50-70", List.of("Heating", "Hot Water", "Restaurant")),
+                new StayOption("Thamel House Lodge", "teahouse", "$40-50", List.of("WiFi", "Local Meals"))
+            )),
+            new StayPlan(5, "Tengboche", List.of(
+                new StayOption("Tengboche Lodge", "teahouse", "$30-40", List.of("Monastery View", "Heating")),
+                new StayOption("Buddhist Guesthouse", "teahouse", "$25-35", List.of("Peaceful", "Local Meals"))
+            )),
+            new StayPlan(6, "Dingboche", List.of(
+                new StayOption("Dingboche Teahouse", "teahouse", "$30-40", List.of("Heating", "Acclimatization Stop")),
+                new StayOption("Himalayan Lodge", "teahouse", "$35-45", List.of("Hot Water", "Local Meals"))
+            )),
+            new StayPlan(7, "Lobuche", List.of(
+                new StayOption("Lobuche Lodge", "teahouse", "$25-35", List.of("Basic Amenities", "Meals")),
+                new StayOption("High Mountain Guesthouse", "teahouse", "$20-30", List.of("Budget Option", "Hot Meals"))
+            )),
+            new StayPlan(8, "Gorak Shep", List.of(
+                new StayOption("Everest View Hotel", "teahouse", "$30-40", List.of("View of EBC Route", "Meals")),
+                new StayOption("Summit Lodge", "teahouse", "$25-35", List.of("Basic", "Quick Service"))
+            ))
+        ),
+        List.of(1, 2, 3, 6)
     ));
 
     list.add(new Trek(
@@ -65,7 +104,20 @@ public final class SeedData {
         "",
         List.of(),
         List.of(),
-        List.of()
+        List.of(),
+        "long",
+        List.of(
+            new StayPlan(1, "Kathmandu", List.of(
+                new StayOption("Hotel de l'Annapurna", "hotel", "$80-120", List.of("WiFi", "Hot Water", "Restaurant"))
+            )),
+            new StayPlan(2, "Besisahar", List.of(
+                new StayOption("Besisahar Lodge", "teahouse", "$25-35", List.of("riverside", "meals"))
+            )),
+            new StayPlan(3, "Dhamildhaka", List.of(
+                new StayOption("Mountain Teahouse", "teahouse", "$20-30", List.of("local food", "heating"))
+            ))
+        ),
+        List.of(1, 3, 6)
     ));
 
     list.add(new Trek(
@@ -81,7 +133,20 @@ public final class SeedData {
         "",
         List.of(),
         List.of(),
-        List.of()
+        List.of(),
+        "short",
+        List.of(
+            new StayPlan(1, "Kathmandu", List.of(
+                new StayOption("Kantipur Temple House", "hotel", "$60-90", List.of("WiFi", "Courtyard"))
+            )),
+            new StayPlan(2, "Langtang", List.of(
+                new StayOption("Langtang Lodge", "teahouse", "$30-40", List.of("heating", "meals"))
+            )),
+            new StayPlan(3, "Kyanjin Gompa", List.of(
+                new StayOption("Gompa Guesthouse", "teahouse", "$25-35", List.of("monastery view", "local food"))
+            ))
+        ),
+        List.of(2, 4, 5)
     ));
 
     list.add(new Trek(
@@ -97,7 +162,20 @@ public final class SeedData {
         "",
         List.of(),
         List.of(),
-        List.of()
+        List.of(),
+        "long",
+        List.of(
+            new StayPlan(1, "Kathmandu", List.of(
+                new StayOption("Hotel de l'Annapurna", "hotel", "$80-120", List.of("WiFi", "Restaurant"))
+            )),
+            new StayPlan(2, "Soti Khola", List.of(
+                new StayOption("Soti Lodge", "teahouse", "$25-35", List.of("river view", "meals"))
+            )),
+            new StayPlan(3, "Namrung", List.of(
+                new StayOption("Namrung Teahouse", "teahouse", "$20-30", List.of("heating", "local food"))
+            ))
+        ),
+        List.of(1, 6)
     ));
 
     list.add(new Trek(
@@ -113,7 +191,20 @@ public final class SeedData {
         "",
         List.of(),
         List.of(),
-        List.of()
+        List.of(),
+        "short",
+        List.of(
+            new StayPlan(1, "Kathmandu", List.of(
+                new StayOption("Kantipur Temple House", "hotel", "$60-90", List.of("WiFi", "Courtyard"))
+            )),
+            new StayPlan(2, "Ghorepani", List.of(
+                new StayOption("Poon Hill Lodge", "teahouse", "$25-35", List.of("sunrise view", "heating"))
+            )),
+            new StayPlan(3, "Poon Hill", List.of(
+                new StayOption("Summit Guesthouse", "teahouse", "$20-30", List.of("best views", "meals"))
+            ))
+        ),
+        List.of(4, 5)
     ));
 
     list.add(new Trek(
@@ -129,7 +220,20 @@ public final class SeedData {
         "",
         List.of(),
         List.of(),
-        List.of()
+        List.of(),
+        "long",
+        List.of(
+            new StayPlan(1, "Kathmandu", List.of(
+                new StayOption("Hotel de l'Annapurna", "hotel", "$80-120", List.of("WiFi", "Restaurant"))
+            )),
+            new StayPlan(2, "Jomsom", List.of(
+                new StayOption("Jomsom Lodge", "hotel", "$40-60", List.of("heating", "meals"))
+            )),
+            new StayPlan(3, "Lo Manthang", List.of(
+                new StayOption("Royal Guesthouse", "guesthouse", "$35-45", List.of("cultural immersion", "meals"))
+            ))
+        ),
+        List.of(1, 3, 6)
     ));
 
     return list;
@@ -184,6 +288,7 @@ public final class SeedData {
         List.of("Everest Base Camp", "Gokyo Lakes", "Three Passes Trek", "Island Peak Climbing"),
         340,
         true,
+        "NLP-2008-00541",
         true,
         true,
         true,
@@ -209,6 +314,7 @@ public final class SeedData {
         List.of("Everest Base Camp", "Gokyo Lakes"),
         210,
         true,
+        "NLP-2011-00712",
         true,
         false,
         false,
@@ -234,6 +340,7 @@ public final class SeedData {
         List.of("Everest Base Camp", "Three Passes Trek", "Island Peak Climbing"),
         450,
         true,
+        "NLP-2006-00389",
         true,
         true,
         false,
@@ -259,6 +366,7 @@ public final class SeedData {
         List.of("Ghorepani Poon Hill"),
         15,
         true,
+        "NLP-2022-01256",
         false,
         false,
         false,
@@ -284,6 +392,7 @@ public final class SeedData {
         List.of("Langtang Valley", "Ghorepani Poon Hill"),
         85,
         true,
+        "NLP-2019-00934",
         true,
         true,
         false,
@@ -309,11 +418,171 @@ public final class SeedData {
         List.of("Everest Base Camp", "Annapurna Circuit", "Upper Mustang"),
         500,
         true,
+        "NLP-2004-00267",
         true,
         true,
         false,
         List.of(new GuideAvailabilityDay(1, true)),
         List.of()
+    ));
+
+    return list;
+  }
+
+  public static List<Activity> activities() {
+    List<Activity> list = new ArrayList<>();
+
+    // Cultural Events
+    list.add(new Activity(
+        1,
+        "Pashupatinath Temple Festival",
+        "event",
+        "cultural",
+        "Kathmandu",
+        27.7245,
+        85.3340,
+        "https://images.unsplash.com/photo-1514890547357-a9db7bdd2d8f?w=800",
+        "Traditional Hindu festival at the sacred Pashupatinath Temple with rituals and celebrations",
+        "March 4-5, 2026",
+        "Free Entry",
+        "Full day"
+    ));
+
+    list.add(new Activity(
+        2,
+        "Boudhanath Stupa Circumambulation",
+        "event",
+        "cultural",
+        "Kathmandu Valley",
+        27.7209,
+        85.3640,
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "Spiritual walk around the largest stupa in Nepal with Buddhist monks",
+        "Daily",
+        "Free",
+        "2-3 hours"
+    ));
+
+    // Adventure Activities
+    list.add(new Activity(
+        3,
+        "Paragliding Over Pokhara",
+        "adventure",
+        "adventure",
+        "Pokhara",
+        28.2096,
+        83.9863,
+        "https://images.unsplash.com/photo-1519904981063-b0cf448d479e?w=800",
+        "Thrilling paragliding experience with panoramic views of Annapurna and Dhaulagiri",
+        "Year-round",
+        "$150-200",
+        "1-2 hours"
+    ));
+
+    list.add(new Activity(
+        4,
+        "Zip-lining at Shivapuri",
+        "adventure",
+        "adventure",
+        "Kathmandu",
+        27.8427,
+        85.3645,
+        "https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=800",
+        "Exciting zip-line adventure through forests with scenic views of the valley",
+        "Daily",
+        "$50-75",
+        "3-4 hours"
+    ));
+
+    list.add(new Activity(
+        5,
+        "White Water Rafting - Bhote Kosi",
+        "adventure",
+        "adventure",
+        "Bhote Kosi River",
+        27.9500,
+        85.9000,
+        "https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800",
+        "Thrilling rafting on grade III-IV rapids with stunning Himalayan backdrop",
+        "September-May",
+        "$100-150",
+        "Full day"
+    ));
+
+    // Sightseeing/Places
+    list.add(new Activity(
+        6,
+        "Monkey Temple (Swayambhunath)",
+        "place",
+        "sightseeing",
+        "Kathmandu",
+        27.7132,
+        85.2816,
+        "https://images.unsplash.com/photo-1548013146-72e2ca0a3024?w=800",
+        "Ancient synagogue stupa atop a hill with panoramic city views and playful monkeys",
+        "Daily 6am-6pm",
+        "$10 entry",
+        "2-3 hours"
+    ));
+
+    list.add(new Activity(
+        7,
+        "Chitwan National Park Safari",
+        "place",
+        "sightseeing",
+        "Chitwan",
+        27.5408,
+        84.4000,
+        "https://images.unsplash.com/photo-1516426122078-c23e76319801?w=800",
+        "Jungle safari to spot Bengal tigers, rhinos, and diverse wildlife",
+        "October-May",
+        "$50-100",
+        "Full day"
+    ));
+
+    list.add(new Activity(
+        8,
+        "Thamel Night Market",
+        "place",
+        "sightseeing",
+        "Kathmandu - Thamel",
+        27.7139,
+        85.3087,
+        "https://images.unsplash.com/photo-1555939594-58d7cb561518?w=800",
+        "Vibrant night market with local crafts, souvenirs, and street food",
+        "Daily 6pm-10pm",
+        "Free to browse",
+        "2-3 hours"
+    ));
+
+    list.add(new Activity(
+        9,
+        "Phewa Lake Boating",
+        "place",
+        "sightseeing",
+        "Pokhara",
+        28.2075,
+        83.9862,
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "Scenic boating on beautiful Phewa Lake with views of Annapurna and Fish Tail",
+        "Daily dawn-dusk",
+        "$15-30",
+        "2-3 hours"
+    ));
+
+    list.add(new Activity(
+        10,
+        "Nagarkot Sunrise Trek",
+        "adventure",
+        "sightseeing",
+        "Nagarkot",
+        27.6875,
+        85.5294,
+        "https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=800",
+        "Short trek to watch sunrise over the Himalayan range",
+        "Daily",
+        "Free",
+        "3-4 hours"
     ));
 
     return list;

@@ -9,6 +9,8 @@ import { GuideRegistration } from "./components/GuideRegistration";
 import { GuideDashboardDynamic } from "./components/GuideDashboardDynamic";
 import { Auth } from "./components/Auth";
 import { Help } from "./components/Help";
+import { ActivitiesListing } from "./components/ActivitiesListing";
+import { GuideListing } from "./components/GuideListing";
 import { NotFound } from "./components/NotFound";
 
 export const router = createBrowserRouter([
@@ -23,6 +25,8 @@ export const router = createBrowserRouter([
       { path: "guides/:guideId", Component: GuideProfileDynamic },
       { path: "guide/register", Component: GuideRegistration },
       { path: "guide/dashboard", Component: GuideDashboardDynamic },
+      { path: "guide/list", Component: GuideListing },
+      { path: "activities", Component: ActivitiesListing },
       { path: "auth", Component: Auth },
       { path: "help", Component: Help },
       { path: "*", Component: NotFound },

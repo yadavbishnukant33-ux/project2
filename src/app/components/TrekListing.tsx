@@ -1,9 +1,13 @@
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { Filter, MapPin, Calendar, TrendingUp, DollarSign } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { apiGet } from "../api/http";
 
 export function TrekListing() {
+  const [searchParams] = useSearchParams();
+  const searchFilter = searchParams.get("search")?.toLowerCase() || "";
+  const typeFilter = searchParams.get("type")?.toLowerCase() || "";
+
   const [filters, setFilters] = useState({
     difficulty: "",
     duration: "",
@@ -56,6 +60,13 @@ export function TrekListing() {
       const region = String(trek.region ?? "").toLowerCase();
       const days = parseDays(trek.duration);
       const costNum = parseCost(trek.cost);
+
+      if (typeFilter && String(trek.type ?? "").toLowerCase() !== typeFilter) return false;
+      if (searchFilter) {
+        const nameMatch = String(trek.name ?? "").toLowerCase().includes(searchFilter);
+        const descMatch = String(trek.description ?? "").toLowerCase().includes(searchFilter);
+        if (!nameMatch && !descMatch) return false;
+      }
 
       if (filters.difficulty && difficulty !== filters.difficulty) return false;
       if (filters.region && region !== filters.region) return false;

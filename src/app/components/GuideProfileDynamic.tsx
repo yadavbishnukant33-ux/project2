@@ -14,6 +14,7 @@ import {
   Info,
   Lock,
   Clock,
+  BadgeCheck,
 } from "lucide-react";
 import { apiGet, apiPost } from "../api/http";
 
@@ -22,12 +23,14 @@ export function GuideProfileDynamic() {
   const [searchParams] = useSearchParams();
 
   const [guide, setGuide] = useState<any | null>(null);
+  const [trek, setTrek] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [bookingStatus, setBookingStatus] = useState<"draft" | "pending">("draft");
   const [bookingError, setBookingError] = useState<string | null>(null);
+  const [selectedAccommodations, setSelectedAccommodations] = useState<Map<number, number>>(new Map());
 
   const trekIdFromQuery = searchParams.get("trekId");
   const trekId = trekIdFromQuery ? Number(trekIdFromQuery) : NaN;
@@ -43,12 +46,19 @@ export function GuideProfileDynamic() {
 
     setLoading(true);
     setError(null);
-    apiGet<any>(`/guides/${id}`)
-      .then((data) => {
-        if (!cancelled) setGuide(data);
+    
+    Promise.all([
+      apiGet<any>(`/guides/${id}`),
+      trekId && Number.isFinite(trekId) ? apiGet<any>(`/treks/${trekId}`) : Promise.resolve(null),
+    ])
+      .then(([guideData, trekData]) => {
+        if (!cancelled) {
+          setGuide(guideData);
+          if (trekData) setTrek(trekData);
+        }
       })
       .catch((e) => {
-        if (!cancelled) setError(e?.message ?? "Failed to load guide profile");
+        if (!cancelled) setError(e?.message ?? "Failed to load profile");
       })
       .finally(() => {
         if (!cancelled) setLoading(false);
@@ -57,7 +67,7 @@ export function GuideProfileDynamic() {
     return () => {
       cancelled = true;
     };
-  }, [guideId]);
+  }, [guideId, trekId]);
 
   const availability = guide?.availability ?? [];
   const reviews = guide?.reviews ?? [];
@@ -115,11 +125,20 @@ export function GuideProfileDynamic() {
               <div className="flex flex-col sm:flex-row justify-between items-start gap-4 mb-4">
                 <div>
                   <h1 className="text-[#1B5E20] mb-2">{guide.name}</h1>
-                  {guide.verified && (
-                    <span className="inline-block px-3 py-1 bg-[#E8F5E9] text-[#2E7D32] text-sm rounded-full mb-3">
-                      ✓ Verified Guide
-                    </span>
-                  )}
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {guide.verified && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#E8F5E9] text-[#2E7D32] text-sm rounded-full font-semibold">
+                        <CheckCircle className="w-4 h-4" />
+                        Verified Guide
+                      </span>
+                    )}
+                    {guide.licenseNumber && (
+                      <span className="inline-flex items-center gap-1 px-3 py-1 bg-[#FFF3E0] text-[#F57C00] text-sm rounded-full font-semibold">
+                        <BadgeCheck className="w-4 h-4" />
+                        License: {guide.licenseNumber}
+                      </span>
+                    )}
+                  </div>
                   <div className="flex items-center gap-4 text-sm text-[#263238] flex-wrap">
                     <div className="flex items-center gap-1">
                       <Star className="w-5 h-5 text-yellow-500 fill-yellow-500" />
@@ -402,21 +421,64 @@ export function GuideProfileDynamic() {
                       <span className="text-[#263238] font-medium">${guide.pricePerDay} / day</span>
                     </div>
 
-                    <div className="mt-6 p-4 border border-gray-200 rounded-xl bg-[#F5F5F5]">
-                      <div className="flex items-center gap-2 mb-2">
-                        <Lock className="w-4 h-4 text-[#2E7D32]" />
-                        <span className="text-[#263238] font-medium">Secure Payment via Platform</span>
+                    {/* Accommodation Selection */}
+                    {trek && trek.stayPlan && trek.stayPlan.length > 0 && (
+                      <div className="border-t border-gray-200 pt-4 mt-4">
+                        <h4 className="text-[#263238] font-bold mb-3 flex items-center gap-2 text-sm">
+                          <MapPin className="w-4 h-4 text-[#2E7D32]" />
+                          Accommodation Preferences
+                        </h4>
+                        <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
+                          {trek.stayPlan.slice(0, 3).map((stay, dayIndex) => (
+                            <div key={dayIndex} className="border rounded-lg p-2 bg-[#F5F5F5] text-xs">
+                              <p className="font-semibold text-[#263238] mb-1">Day {stay.day} - {stay.location}</p>
+                              {stay.accommodations && stay.accommodations.length > 0 ? (
+                                <div className="space-y-1">
+                                  {stay.accommodations.slice(0, 2).map((acc, accIndex) => (
+                                    <label key={accIndex} className="flex items-start gap-2 cursor-pointer hover:bg-white p-1 rounded">
+                                      <input
+                                        type="radio"
+                                        name={`day-${dayIndex}`}
+                                        checked={selectedAccommodations.get(dayIndex) === accIndex}
+                                        onChange={() => {
+                                          const newSelected = new Map(selectedAccommodations);
+                                          newSelected.set(dayIndex, accIndex);
+                                          setSelectedAccommodations(newSelected);
+                                        }}
+                                        className="mt-0.5"
+                                      />
+                                      <div className="flex-1">
+                                        <p className="text-xs font-semibold text-[#263238]">
+                                          {acc.name} <span className="text-[#1B5E20]">${acc.pricePerNight}</span>
+                                        </p>
+                                      </div>
+                                    </label>
+                                  ))}
+                                </div>
+                              ) : (
+                                <p className="text-xs text-[#717182]">TBD</p>
+                              )}
+                            </div>
+                          ))}
+                        </div>
                       </div>
-                      <div className="flex items-center gap-2 mb-2">
-                        <Shield className="w-4 h-4 text-[#1B5E20]" />
-                        <span className="text-[#1B5E20] font-medium bg-[#A5D6A7]/30 px-2 py-0.5 rounded text-sm">
-                          Escrow Protected
-                        </span>
-                      </div>
-                      <p className="text-xs text-[#717182] mt-2">
-                        Your payment is held securely by Gantavya and is only released to the guide after the trek begins.
-                      </p>
+                    )}
+                  </div>
+
+                  <div className="mt-6 p-4 border border-gray-200 rounded-xl bg-[#F5F5F5]">
+                    <div className="flex items-center gap-2 mb-2">
+                      <Lock className="w-4 h-4 text-[#2E7D32]" />
+                      <span className="text-[#263238] font-medium">Secure Payment via Platform</span>
                     </div>
+                    <div className="flex items-center gap-2 mb-2">
+                      <Shield className="w-4 h-4 text-[#1B5E20]" />
+                      <span className="text-[#1B5E20] font-medium bg-[#A5D6A7]/30 px-2 py-0.5 rounded text-sm">
+                        Escrow Protected
+                      </span>
+                    </div>
+                    <p className="text-xs text-[#717182] mt-2">
+                      Your payment is held securely by Gantavya and is only released to the guide after the trek begins.
+                    </p>
                   </div>
 
                   {bookingError && (
@@ -439,6 +501,7 @@ export function GuideProfileDynamic() {
                           touristId,
                           trekId,
                           guideId: guide.id,
+                          accommodationPreferences: Object.fromEntries(selectedAccommodations),
                         });
                         setBookingStatus("pending");
                       } catch (e: any) {

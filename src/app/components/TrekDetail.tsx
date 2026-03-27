@@ -1,5 +1,5 @@
 import { useParams, Link } from "react-router";
-import { MapPin, Calendar, TrendingUp, DollarSign, Users, Mountain, Info, Navigation } from "lucide-react";
+import { MapPin, Calendar, TrendingUp, DollarSign, Users, Mountain, Info, Navigation, Home, Utensils, Wifi, Wind } from "lucide-react";
 import { useEffect, useState } from "react";
 import { apiGet } from "../api/http";
 
@@ -163,6 +163,71 @@ export function TrekDetail() {
                 ))}
               </div>
             </div>
+
+            {/* Accommodations */}
+            {trek.stayPlan && trek.stayPlan.length > 0 && (
+              <div className="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+                <h3 className="text-[#1B5E20] mb-4 flex items-center gap-2">
+                  <Home className="w-5 h-5" />
+                  Stay Accommodations
+                </h3>
+                <div className="space-y-4">
+                  {trek.stayPlan.map((stay, index) => (
+                    <div key={index} className="border rounded-xl p-4 hover:border-[#2E7D32] transition-colors">
+                      <div className="flex items-start justify-between mb-3">
+                        <div>
+                          <p className="text-sm font-semibold text-[#717182]">Day {stay.day}</p>
+                          <h4 className="text-[#263238] font-bold flex items-center gap-2 mt-1">
+                            <MapPin className="w-4 h-4 text-[#2E7D32]" />
+                            {stay.location}
+                          </h4>
+                        </div>
+                      </div>
+                      {stay.accommodations && stay.accommodations.length > 0 ? (
+                        <div className="space-y-3">
+                          {stay.accommodations.map((acc, accIndex) => (
+                            <div
+                              key={accIndex}
+                              className="bg-gradient-to-r from-[#F5F5F5] to-[#E8F5E9] rounded-lg p-3 hover:shadow-md transition-shadow"
+                            >
+                              <div className="flex items-start justify-between mb-2">
+                                <div>
+                                  <p className="font-semibold text-[#263238]">{acc.name}</p>
+                                  <p className="text-sm text-[#717182]">{acc.type}</p>
+                                </div>
+                                <span className="px-3 py-1 bg-[#1B5E20] text-white text-sm font-bold rounded-full">
+                                  ${acc.pricePerNight}/night
+                                </span>
+                              </div>
+                              {acc.amenities && acc.amenities.length > 0 && (
+                                <div className="flex flex-wrap gap-2 mt-2">
+                                  {acc.amenities.map((amenity, amenityIndex) => (
+                                    <span
+                                      key={amenityIndex}
+                                      className="text-xs bg-white text-[#1B5E20] px-2 py-1 rounded-full border border-[#1B5E20]"
+                                    >
+                                      {amenity}
+                                    </span>
+                                  ))}
+                                </div>
+                              )}
+                            </div>
+                          ))}
+                        </div>
+                      ) : (
+                        <p className="text-sm text-[#717182]">Accommodation details to be confirmed</p>
+                      )}
+                    </div>
+                  ))}
+                </div>
+                <div className="mt-6 p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                  <p className="text-sm text-blue-900 flex items-start gap-2">
+                    <Info className="w-4 h-4 mt-0.5 flex-shrink-0" />
+                    All accommodations are platform-verified and included in your trek package. You can customize your stay preferences during booking.
+                  </p>
+                </div>
+              </div>
+            )}
 
             {/* Book Guide CTA */}
             <div className="bg-gradient-to-r from-[#1B5E20] to-[#2E7D32] rounded-2xl p-6 text-white shadow-lg">
