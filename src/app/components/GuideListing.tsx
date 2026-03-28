@@ -1,6 +1,7 @@
 import { useParams, Link, useSearchParams } from "react-router";
 import { Filter, Star, DollarSign, Languages, Award, Tag, ArrowUpDown, Shield, Search } from "lucide-react";
 import { useState } from "react";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 export function GuideListing() {
   const { trekId } = useParams();
@@ -312,7 +313,7 @@ export function GuideListing() {
                   <div className="flex flex-col md:flex-row gap-6">
                     {/* Guide Photo */}
                     <div className="flex-shrink-0">
-                      <img
+                      <ImageWithFallback
                         src={guide.photo}
                         alt={guide.name}
                         className="w-32 h-32 rounded-2xl object-cover"
@@ -406,9 +407,12 @@ export function GuideListing() {
                         >
                           View Profile
                         </Link>
-                        <button className="flex-1 px-4 py-2 bg-[#1B5E20] text-white rounded-xl hover:bg-[#2E7D32] transition-colors">
+                        <Link
+                          to={`/guides/${guide.id}?book=true`}
+                          className="flex-1 px-4 py-2 bg-[#1B5E20] text-white rounded-xl hover:bg-[#2E7D32] transition-colors flex items-center justify-center font-bold"
+                        >
                           Book Now
-                        </button>
+                        </Link>
                         {guide.negotiable && (
                           <button className="px-4 py-2 bg-[#A5D6A7] text-[#1B5E20] rounded-xl hover:bg-[#8BC34A] transition-colors">
                             Propose Price

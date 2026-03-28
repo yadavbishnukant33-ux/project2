@@ -3,6 +3,7 @@ import { Link, useSearchParams } from "react-router";
 import { MapPin, Zap, Users, Clock, ArrowRight } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { Badge } from "./ui/badge";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 interface Activity {
   id: number;
@@ -142,7 +143,7 @@ export function ActivitiesListing() {
             >
               {/* Image */}
               <div className="relative h-48 overflow-hidden bg-gray-200">
-                <img
+                <ImageWithFallback
                   src={activity.image}
                   alt={activity.title}
                   className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"

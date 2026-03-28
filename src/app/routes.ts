@@ -5,6 +5,7 @@ import { TrekListing } from "./components/TrekListing";
 import { TrekDetail } from "./components/TrekDetail";
 import { GuideListingDynamic } from "./components/GuideListingDynamic";
 import { GuideProfileDynamic } from "./components/GuideProfileDynamic";
+import { GuideBookingPage } from "./components/GuideBookingPage";
 import { GuideRegistration } from "./components/GuideRegistration";
 import { GuideDashboardDynamic } from "./components/GuideDashboardDynamic";
 import { Auth } from "./components/Auth";
@@ -23,6 +24,7 @@ export const router = createBrowserRouter([
       { path: "treks/:trekId", Component: TrekDetail },
       { path: "treks/:trekId/guides", Component: GuideListingDynamic },
       { path: "guides/:guideId", Component: GuideProfileDynamic },
+      { path: "guides/:guideId/book", Component: GuideBookingPage },
       { path: "guide/register", Component: GuideRegistration },
       { path: "guide/dashboard", Component: GuideDashboardDynamic },
       { path: "guide/list", Component: GuideListing },

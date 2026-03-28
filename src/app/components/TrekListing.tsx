@@ -2,6 +2,7 @@ import { Link, useSearchParams } from "react-router";
 import { Filter, MapPin, Calendar, TrendingUp, DollarSign } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { apiGet } from "../api/http";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 export function TrekListing() {
   const [searchParams] = useSearchParams();
@@ -221,7 +222,7 @@ export function TrekListing() {
                   className="group bg-white rounded-2xl overflow-hidden shadow-md hover:shadow-2xl transition-all transform hover:-translate-y-1"
                 >
                   <div className="relative h-48 overflow-hidden">
-                    <img
+                    <ImageWithFallback
                       src={trek.image}
                       alt={trek.name}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"

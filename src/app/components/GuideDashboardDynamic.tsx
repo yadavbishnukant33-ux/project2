@@ -27,6 +27,8 @@ type BookingRequest = {
   startDate?: string;
   status: BookingStatus;
   proposedPricePerDay: number;
+  participants?: number;
+  transportPreference?: string;
   accommodationPreferences?: Record<string, string>;
   transportSuggestion?: string;
   routeSuggestion?: string;
@@ -241,8 +243,20 @@ export function GuideDashboardDynamic() {
                                 <span className="text-[#717182]">Start Date:</span> {request.startDate ?? "TBD"}
                               </div>
                               <div>
-                                <span className="text-[#717182]">Requested:</span>{" "}
-                                {new Date(request.createdAt).toLocaleDateString()}
+                                <span className="text-[#717182]">Participants:</span> {request.participants ?? 1}
+                              </div>
+                              <div className="col-span-2 mt-2 pt-2 border-t border-gray-100 flex items-center gap-2">
+                                <span className="text-[#717182]">Transport Note:</span>
+                                <span className="px-2 py-0.5 bg-[#F5F5F5] rounded text-[#1B5E20] font-medium">
+                                  {request.transportPreference === "partner_airport"
+                                    ? "✈️ Partner Airport Pickup Required"
+                                    : request.transportPreference === "partner_domestic"
+                                    ? "🚗 Partner Domestic Transport Required"
+                                    : "🚶 Self-arranged transport"}
+                                </span>
+                              </div>
+                              <div className="col-span-2 text-xs text-[#717182] text-right">
+                                Requested: {new Date(request.createdAt).toLocaleDateString()}
                               </div>
                             </div>
                           </div>

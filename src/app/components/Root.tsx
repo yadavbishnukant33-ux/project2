@@ -1,10 +1,28 @@
-import { Outlet, Link, useLocation } from "react-router";
-import { Mountain, Menu, X, User } from "lucide-react";
-import { useState } from "react";
+import { Outlet, Link, useLocation, useNavigate } from "react-router";
+import { Mountain, Menu, X, User, LogOut, LayoutDashboard } from "lucide-react";
+import { useState, useEffect } from "react";
 
 export function Root() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const location = useLocation();
+  const navigate = useNavigate();
+
+  const [authToken, setAuthToken] = useState<string | null>(null);
+  const [userRole, setUserRole] = useState<string | null>(null);
+
+  useEffect(() => {
+    setAuthToken(localStorage.getItem("authToken"));
+    setUserRole(localStorage.getItem("demoUserRole"));
+  }, [location.pathname]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("authToken");
+    localStorage.removeItem("demoUserRole");
+    localStorage.removeItem("demoUserId");
+    setAuthToken(null);
+    setUserRole(null);
+    navigate("/");
+  };
 
   const navLinks = [
     { path: "/", label: "Home" },
@@ -50,19 +68,42 @@ export function Root() {
 
             {/* Auth Buttons */}
             <div className="hidden md:flex items-center gap-4">
-              <Link
-                to="/auth"
-                className="flex items-center gap-2 px-4 py-2 text-[#263238] hover:text-[#1B5E20] transition-colors"
-              >
-                <User className="w-5 h-5" />
-                <span>Login</span>
-              </Link>
-              <Link
-                to="/guide/register"
-                className="px-5 py-2 bg-[#1B5E20] text-white rounded-xl hover:bg-[#2E7D32] transition-colors shadow-md hover:shadow-lg"
-              >
-                Become a Guide
-              </Link>
+              {authToken ? (
+                <>
+                  {userRole === "guide" && (
+                    <Link
+                      to="/guide/dashboard"
+                      className="flex items-center gap-2 px-4 py-2 text-[#263238] hover:text-[#1B5E20] transition-colors"
+                    >
+                      <LayoutDashboard className="w-5 h-5" />
+                      <span>Dashboard</span>
+                    </Link>
+                  )}
+                  <button
+                    onClick={handleLogout}
+                    className="flex items-center gap-2 px-4 py-2 text-red-600 hover:text-red-700 transition-colors"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    <span>Logout</span>
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/auth"
+                    className="flex items-center gap-2 px-4 py-2 text-[#263238] hover:text-[#1B5E20] transition-colors"
+                  >
+                    <User className="w-5 h-5" />
+                    <span>Login</span>
+                  </Link>
+                  <Link
+                    to="/guide/register"
+                    className="px-5 py-2 bg-[#1B5E20] text-white rounded-xl hover:bg-[#2E7D32] transition-colors shadow-md hover:shadow-lg"
+                  >
+                    Become a Guide
+                  </Link>
+                </>
+              )}
             </div>
 
             {/* Mobile Menu Button */}
@@ -93,20 +134,45 @@ export function Root() {
                   {link.label}
                 </Link>
               ))}
-              <Link
-                to="/auth"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-2 text-[#263238] hover:bg-[#F5F5F5] rounded-lg"
-              >
-                Login
-              </Link>
-              <Link
-                to="/guide/register"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-2 bg-[#1B5E20] text-white rounded-lg text-center"
-              >
-                Become a Guide
-              </Link>
+              {authToken ? (
+                <>
+                  {userRole === "guide" && (
+                    <Link
+                      to="/guide/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="block px-4 py-2 text-[#263238] hover:bg-[#F5F5F5] rounded-lg"
+                    >
+                      Dashboard
+                    </Link>
+                  )}
+                  <button
+                    onClick={() => {
+                      handleLogout();
+                      setMobileMenuOpen(false);
+                    }}
+                    className="block w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/auth"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 text-[#263238] hover:bg-[#F5F5F5] rounded-lg"
+                  >
+                    Login
+                  </Link>
+                  <Link
+                    to="/guide/register"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="block px-4 py-2 bg-[#1B5E20] text-white rounded-lg text-center"
+                  >
+                    Become a Guide
+                  </Link>
+                </>
+              )}
             </div>
           </div>
         )}

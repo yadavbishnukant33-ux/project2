@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { apiGet } from "../api/http";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 export function GuideListingDynamic() {
   const { trekId } = useParams();
@@ -290,7 +291,7 @@ export function GuideListingDynamic() {
                   >
                     <div className="flex flex-col md:flex-row gap-6">
                       <div className="flex-shrink-0">
-                        <img
+                        <ImageWithFallback
                           src={guide.photo}
                           alt={guide.name}
                           className="w-32 h-32 rounded-2xl object-cover"
@@ -388,9 +389,12 @@ export function GuideListingDynamic() {
                           >
                             View Profile
                           </Link>
-                          <button className="flex-1 px-4 py-2 bg-[#1B5E20] text-white rounded-xl hover:bg-[#2E7D32] transition-colors">
+                          <Link
+                            to={`/guides/${guide.id}?trekId=${trekId || ''}&book=true`}
+                            className="flex-1 px-4 py-2 bg-[#1B5E20] text-white rounded-xl hover:bg-[#2E7D32] transition-colors flex items-center justify-center font-bold"
+                          >
                             Book Now
-                          </button>
+                          </Link>
                           {guide.negotiable && (
                             <button className="px-4 py-2 bg-[#A5D6A7] text-[#1B5E20] rounded-xl hover:bg-[#8BC34A] transition-colors">
                               Propose Price

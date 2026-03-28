@@ -1,7 +1,7 @@
 import { useState, FormEvent } from "react";
 import { useNavigate } from "react-router";
 import { Mountain, Mail, Lock, User } from "lucide-react";
-import { Link } from "react-router";
+import { Link, useSearchParams } from "react-router";
 import { apiPost } from "../api/http";
 
 export function Auth() {
@@ -13,6 +13,7 @@ export function Auth() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -29,7 +30,9 @@ export function Auth() {
       localStorage.setItem("authToken", response.token);
       localStorage.setItem("demoUserRole", response.role);
       localStorage.setItem("demoUserId", response.id);
-      navigate("/");
+      
+      const redirectTo = searchParams.get("redirect");
+      navigate(redirectTo || "/");
     } catch (error: any) {
       setError(error?.message ?? "Authentication failed.");
     } finally {
@@ -147,9 +150,13 @@ export function Auth() {
 
             {isLogin && (
               <div className="flex justify-end">
-                <a href="#" className="text-sm text-[#2E7D32] hover:text-[#1B5E20]">
+                <button 
+                  type="button" 
+                  onClick={(e) => { e.preventDefault(); alert("Password recovery is coming soon."); }} 
+                  className="text-sm text-[#2E7D32] hover:text-[#1B5E20]"
+                >
                   Forgot password?
-                </a>
+                </button>
               </div>
             )}
 

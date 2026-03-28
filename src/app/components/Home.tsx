@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router";
 import { Search, Mountain, Shield, Users, MapPin, Calendar, TrendingUp, Zap, ChevronRight, Landmark } from "lucide-react";
 import { useState, useEffect } from "react";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
 
 interface Trek {
   id: number;
@@ -89,7 +90,7 @@ export function Home() {
       className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
     >
       <div className="relative h-56 overflow-hidden bg-gray-200">
-        <img
+        <ImageWithFallback
           src={trek.image}
           alt={trek.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -225,7 +226,7 @@ export function Home() {
                 className="group bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1"
               >
                 <div className="relative h-56 overflow-hidden bg-gray-200">
-                  <img
+                  <ImageWithFallback
                     src="https://images.unsplash.com/photo-1573455494057-1266d2a4b3f5?w=1200"
                     alt="Heritage Tour"
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
@@ -288,7 +289,7 @@ export function Home() {
             {heritageCards.map((c) => (
               <div key={c.title} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100">
                 <div className="relative h-56 overflow-hidden bg-gray-200">
-                  <img src={c.image} alt={c.title} className="w-full h-full object-cover" />
+                  <ImageWithFallback src={c.image} alt={c.title} className="w-full h-full object-cover" />
                   <div className="absolute top-4 right-4 px-3 py-1 bg-white/90 backdrop-blur-sm rounded-full text-sm font-bold text-[#263238]">
                     {c.tours} Tours
                   </div>
@@ -360,7 +361,7 @@ export function Home() {
                   return (
                     <div key={activity.id} className="bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-100">
                       <div className="relative h-56 overflow-hidden bg-gray-200">
-                        <img src={activity.image} alt={activity.title} className="w-full h-full object-cover" />
+                        <ImageWithFallback src={activity.image} alt={activity.title} className="w-full h-full object-cover" />
                         <div className={`absolute top-4 left-4 px-3 py-1 ${status.color} text-white rounded-full text-xs font-bold`}>
                           {status.label}
                         </div>
