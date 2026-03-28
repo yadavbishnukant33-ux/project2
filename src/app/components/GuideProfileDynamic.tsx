@@ -30,7 +30,8 @@ export function GuideProfileDynamic() {
   const [showBookingModal, setShowBookingModal] = useState(false);
   const [bookingStatus, setBookingStatus] = useState<"draft" | "pending">("draft");
   const [bookingError, setBookingError] = useState<string | null>(null);
-  const [selectedAccommodations, setSelectedAccommodations] = useState<Map<number, number>>(new Map());
+  const [selectedAccommodations, setSelectedAccommodations] = useState<Map<number, string>>(new Map());
+  const [selectedStartDate, setSelectedStartDate] = useState<string>(() => new Date().toISOString().slice(0, 10));
 
   const trekIdFromQuery = searchParams.get("trekId");
   const trekId = trekIdFromQuery ? Number(trekIdFromQuery) : NaN;
@@ -420,6 +421,15 @@ export function GuideProfileDynamic() {
                       <span className="text-[#717182]">Rate</span>
                       <span className="text-[#263238] font-medium">${guide.pricePerDay} / day</span>
                     </div>
+                    <div className="flex flex-col gap-2 py-3 border-b border-gray-100">
+                      <label className="text-[#717182] text-sm">Preferred Start Date</label>
+                      <input
+                        type="date"
+                        value={selectedStartDate}
+                        onChange={(event) => setSelectedStartDate(event.target.value)}
+                        className="w-full px-4 py-3 bg-white rounded-xl border border-gray-200 outline-none focus:ring-2 focus:ring-[#2E7D32]"
+                      />
+                    </div>
 
                     {/* Accommodation Selection */}
                     {trek && trek.stayPlan && trek.stayPlan.length > 0 && (
@@ -429,20 +439,20 @@ export function GuideProfileDynamic() {
                           Accommodation Preferences
                         </h4>
                         <div className="space-y-2 max-h-48 overflow-y-auto pr-2">
-                          {trek.stayPlan.slice(0, 3).map((stay, dayIndex) => (
+                          {trek.stayPlan.slice(0, 3).map((stay: any, dayIndex: number) => (
                             <div key={dayIndex} className="border rounded-lg p-2 bg-[#F5F5F5] text-xs">
                               <p className="font-semibold text-[#263238] mb-1">Day {stay.day} - {stay.location}</p>
                               {stay.accommodations && stay.accommodations.length > 0 ? (
                                 <div className="space-y-1">
-                                  {stay.accommodations.slice(0, 2).map((acc, accIndex) => (
+                                  {stay.accommodations.slice(0, 2).map((acc: any, accIndex: number) => (
                                     <label key={accIndex} className="flex items-start gap-2 cursor-pointer hover:bg-white p-1 rounded">
                                       <input
                                         type="radio"
                                         name={`day-${dayIndex}`}
-                                        checked={selectedAccommodations.get(dayIndex) === accIndex}
+                                        checked={selectedAccommodations.get(dayIndex) === acc.name}
                                         onChange={() => {
                                           const newSelected = new Map(selectedAccommodations);
-                                          newSelected.set(dayIndex, accIndex);
+                                          newSelected.set(dayIndex, acc.name);
                                           setSelectedAccommodations(newSelected);
                                         }}
                                         className="mt-0.5"
@@ -495,12 +505,13 @@ export function GuideProfileDynamic() {
                         return;
                       }
 
-                      const touristId = localStorage.getItem("demoTouristId") ?? "1";
+                      const touristId = localStorage.getItem("demoUserId") ?? "1";
                       try {
                         await apiPost("/booking-requests", {
                           touristId,
                           trekId,
                           guideId: guide.id,
+                          startDate: selectedStartDate,
                           accommodationPreferences: Object.fromEntries(selectedAccommodations),
                         });
                         setBookingStatus("pending");

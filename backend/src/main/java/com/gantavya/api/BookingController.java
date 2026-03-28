@@ -4,29 +4,33 @@ import com.gantavya.domain.BookingDtos;
 import com.gantavya.domain.BookingDtos.*;
 import com.gantavya.domain.BookingRequestDocument;
 import com.gantavya.domain.CatalogDtos;
+import com.gantavya.domain.NotificationDocument;
+import com.gantavya.api.NotificationRepository;
 import com.gantavya.seed.SeedData;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
 public class BookingController {
 
   private final BookingRepository bookingRepository;
+  private final NotificationRepository notificationRepository;
 
-  public BookingController(BookingRepository bookingRepository) {
+  public BookingController(BookingRepository bookingRepository, NotificationRepository notificationRepository) {
     this.bookingRepository = bookingRepository;
+    this.notificationRepository = notificationRepository;
   }
 
   @PostMapping("/booking-requests")
   @ResponseStatus(HttpStatus.CREATED)
-  public BookingDtos.BookingRequestResponse createBooking(@RequestBody CreateBookingRequest req) {
+  public BookingRequestResponse createBooking(@RequestBody CreateBookingRequest req) {
     var now = Instant.now();
 
-    // Use seeded guide pricing for demo consistency.
     CatalogDtos.Guide guide = SeedData.guides().stream()
         .filter(g -> g.id() == req.guideId())
         .findFirst()
@@ -37,20 +41,36 @@ public class BookingController {
         .findFirst()
         .orElseThrow(() -> new ApiBadRequest("Trek not found: " + req.trekId()));
 
-    // Keep the match simple for MVP: ensure the guide can do the trek.
     if (!guide.treks().contains(trek.name())) {
       throw new ApiBadRequest("Guide does not support this trek (demo validation).");
     }
+
+    String startDate = req.startDate() != null && !req.startDate().isBlank() ? req.startDate() : "TBD";
+    Map<String, String> accommodationPreferences = req.accommodationPreferences() != null ? req.accommodationPreferences() : Map.of();
+    double accommodationCost = accommodationPreferences.size() * 20.0;
 
     BookingRequestDocument doc = new BookingRequestDocument(
         req.touristId(),
         req.trekId(),
         req.guideId(),
+        startDate,
+        accommodationPreferences,
+        "pending",
+        "Local jeep transfer recommended from the city to the trailhead.",
+        "Standard route with acclimatization stops and lake views.",
         "pending",
         guide.pricePerDay(),
         now
     );
     BookingRequestDocument saved = bookingRepository.save(doc);
+
+    NotificationDocument notification = new NotificationDocument(
+        String.valueOf(req.guideId()),
+        "Booking Request",
+        "New booking request for " + trek.name(),
+        "Tourist " + req.touristId() + " requested " + trek.name() + " starting " + startDate + "."
+    );
+    notificationRepository.save(notification);
 
     return toResponse(saved);
   }
@@ -71,7 +91,6 @@ public class BookingController {
         .orElseThrow(() -> new ApiBadRequest("Booking not found: " + bookingId));
 
     if ("confirmed".equalsIgnoreCase(doc.getStatus()) || "rejected".equalsIgnoreCase(doc.getStatus())) {
-      // Idempotent: if already decided, return as-is.
       return toResponse(doc);
     }
 
@@ -93,6 +112,9 @@ public class BookingController {
         .findFirst()
         .orElseThrow(() -> new ApiBadRequest("Trek not found: " + doc.getTrekId()));
 
+    Map<String, String> preferences = doc.getAccommodationPreferences() != null ? doc.getAccommodationPreferences() : Map.of();
+    double accommodationCost = preferences.size() * 20.0;
+
     return new BookingRequestResponse(
         doc.getId(),
         doc.getTouristId(),
@@ -100,11 +122,14 @@ public class BookingController {
         trek.duration(),
         doc.getTrekId(),
         doc.getGuideId(),
-        "",
+        doc.getStartDate() != null ? doc.getStartDate() : "TBD",
         doc.getStatus(),
-        "pending",
+        doc.getPaymentStatus() != null ? doc.getPaymentStatus() : "pending",
         doc.getProposedPricePerDay(),
-        0.0,
+        accommodationCost,
+        preferences,
+        doc.getTransportSuggestion() != null ? doc.getTransportSuggestion() : "Jeep transfer from city to trailhead.",
+        doc.getRouteSuggestion() != null ? doc.getRouteSuggestion() : "Standard route with acclimatization stops.",
         false,
         doc.getCreatedAt()
     );

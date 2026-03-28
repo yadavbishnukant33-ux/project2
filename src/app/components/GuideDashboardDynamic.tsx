@@ -8,6 +8,7 @@ import {
   Users,
   Settings,
   MessageCircle,
+  Bell,
   CheckCircle,
   XCircle,
   Edit,
@@ -23,9 +24,23 @@ type BookingRequest = {
   duration: string;
   trekId: number;
   guideId: number;
+  startDate?: string;
   status: BookingStatus;
   proposedPricePerDay: number;
+  accommodationPreferences?: Record<string, string>;
+  transportSuggestion?: string;
+  routeSuggestion?: string;
   createdAt: string;
+};
+
+type Notification = {
+  id: string;
+  guideId: string;
+  type: string;
+  title: string;
+  message: string;
+  read: boolean;
+  createdAt: number;
 };
 
 export function GuideDashboardDynamic() {
@@ -37,6 +52,7 @@ export function GuideDashboardDynamic() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [bookingRequests, setBookingRequests] = useState<BookingRequest[]>([]);
+  const [notifications, setNotifications] = useState<Notification[]>([]);
 
   useEffect(() => {
     if (!Number.isFinite(guideId)) {
@@ -47,9 +63,14 @@ export function GuideDashboardDynamic() {
 
     setLoading(true);
     setError(null);
-    apiGet<BookingRequest[]>(`/guide/${guideId}/booking-requests`)
-      .then((data) => {
-        setBookingRequests(data);
+
+    Promise.all([
+      apiGet<BookingRequest[]>(`/guide/${guideId}/booking-requests`),
+      apiGet<Notification[]>(`/guides/${guideId}/notifications`),
+    ])
+      .then(([bookingData, notificationData]) => {
+        setBookingRequests(bookingData);
+        setNotifications(notificationData);
       })
       .catch((e) => {
         setError(e?.message ?? "Failed to load bookings");
@@ -149,6 +170,7 @@ export function GuideDashboardDynamic() {
                 { id: "overview", label: "Booking Requests", icon: Users },
                 { id: "treks", label: "My Treks", icon: Calendar },
                 { id: "availability", label: "Availability", icon: Clock },
+                { id: "notifications", label: "Notifications", icon: Bell },
                 { id: "profile", label: "Profile Settings", icon: Settings },
               ].map((tab) => (
                 <button
@@ -216,7 +238,7 @@ export function GuideDashboardDynamic() {
                                 <span className="text-[#717182]">Duration:</span> {request.duration}
                               </div>
                               <div>
-                                <span className="text-[#717182]">Price:</span> ${request.proposedPricePerDay}/day
+                                <span className="text-[#717182]">Start Date:</span> {request.startDate ?? "TBD"}
                               </div>
                               <div>
                                 <span className="text-[#717182]">Requested:</span>{" "}
@@ -261,6 +283,40 @@ export function GuideDashboardDynamic() {
                               </button>
                             </div>
                           )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
+
+            {activeTab === "notifications" && (
+              <div>
+                <h3 className="text-[#1B5E20] mb-4">Notifications</h3>
+                {loading ? (
+                  <div className="text-[#717182]">Loading notifications...</div>
+                ) : notifications.length === 0 ? (
+                  <div className="text-[#717182]">No notifications yet.</div>
+                ) : (
+                  <div className="space-y-4">
+                    {notifications.map((notification) => (
+                      <div
+                        key={notification.id}
+                        className="border border-gray-200 rounded-2xl p-6 bg-white"
+                      >
+                        <div className="flex justify-between items-start gap-4 mb-3">
+                          <div>
+                            <h4 className="text-[#1B5E20] font-semibold">{notification.title}</h4>
+                            <p className="text-sm text-[#717182]">{notification.type}</p>
+                          </div>
+                          <span className={`px-3 py-1 rounded-full text-xs ${notification.read ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
+                            {notification.read ? "Read" : "New"}
+                          </span>
+                        </div>
+                        <p className="text-[#263238] text-sm">{notification.message}</p>
+                        <div className="text-xs text-[#717182] mt-3">
+                          {new Date(notification.createdAt).toLocaleString()}
                         </div>
                       </div>
                     ))}

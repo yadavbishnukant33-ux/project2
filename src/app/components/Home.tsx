@@ -266,6 +266,14 @@ export function Home() {
               </Link>
             </div>
           )}
+          <div className="mt-10 text-center">
+            <Link
+              to="/treks"
+              className="inline-flex items-center gap-2 px-6 py-3 border-2 border-[#1B5E20] text-[#1B5E20] rounded-xl font-bold hover:bg-[#1B5E20] hover:text-white transition-colors"
+            >
+              Explore More Treks <ChevronRight className="w-5 h-5" />
+            </Link>
+          </div>
         </div>
       </section>
 
